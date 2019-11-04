@@ -15,6 +15,9 @@ public class Main {
 	public static void main(String[] args) {
 		RegulatedMotor motorA = new EV3LargeRegulatedMotor(MotorPort.C);
 		RegulatedMotor motorB = new EV3LargeRegulatedMotor(MotorPort.B);
+		EV3ColorSensor colorSensor = new EV3ColorSensor(SensorPort.S4);
+		
+		colorSensor.setCurrentMode(0);
 		
 		motorA.setSpeed(100);
 		motorB.setSpeed(100);
@@ -22,11 +25,16 @@ public class Main {
 		LCD.drawString("test lol", 0, 4);
 		Delay.msDelay(5000);
 		
-		forward(motorA, motorB, 3000);
-		turnLeft(motorA, motorB, 1500);
-		backward(motorA, motorB, 2000);
-		//turnRight(motorA, motorB, 300);
-		forward(motorA, motorB, 1500);
+		
+		LCD.clear();
+		LCD.drawString("ENTER TO", 0, 3);
+		LCD.drawString("SCAN COLOR", 0, 4);
+		Button.ENTER.waitForPress();
+		int sample = colorSensor.getColorID();
+		
+		LCD.clear();
+		LCD.drawString("COLOR:" + sample, 0, 4);
+		Delay.msDelay(3000);
 		
 		motorA.close();
 		motorB.close();
