@@ -16,8 +16,8 @@ import lejos.utility.*;
 public class Main {
 
 	public static void main(String[] args) {
-		LCD.drawString("gyro and pilot", 0, 4);
-		LCD.drawString("navigation test", 0, 3);
+		LCD.drawString("gyro and pilot", 0, 3);
+		LCD.drawString("navigation test 2", 0, 4);
 		Delay.msDelay(3000);
 		
 		
@@ -28,34 +28,37 @@ public class Main {
 		EV3GyroSensor gyroSensor = new EV3GyroSensor(SensorPort.S2);
 
 		//Wheel diameter 5.5
-		//Track width 15
-		Wheel leftWheel = new WheeledChassis.Modeler(motorA, 5.5).offset(-7.5);
-		Wheel rightWheel = new WheeledChassis.Modeler(motorB, 5.5).offset(7.5);
+		//Track width 12
+		Wheel leftWheel = new WheeledChassis.Modeler(motorA, 5.5).offset(-6);
+		Wheel rightWheel = new WheeledChassis.Modeler(motorB, 5.5).offset(6);
 		Chassis chassis = new WheeledChassis(new Wheel[]{leftWheel, rightWheel}, WheeledChassis.TYPE_DIFFERENTIAL); 
 		MovePilot pilot = new MovePilot(chassis);
 		
-		pilot.setLinearSpeed(5);
-		pilot.setAngularSpeed(50);
+		pilot.setLinearSpeed(10);
+		pilot.setAngularSpeed(100);
 				
 		
 		pilot.travel(50);
 		
-		final SampleProvider sp = gyroSensor.getAngleMode();
-		float[] angleSample = new float[sp.sampleSize()];
-		sp.fetchSample(angleSample, 0);
+		pilot.rotate(180);
 		
-		while(angleSample[0] <= 180){
-			pilot.rotateRight();
-			sp.fetchSample(angleSample, 0);
-			
-		}
+		
+//		final SampleProvider sp = gyroSensor.getAngleMode();
+//		float[] angleSample = new float[sp.sampleSize()];
+//		sp.fetchSample(angleSample, 0);
+//		
+//		while(angleSample[0] <= 180){
+//			pilot.rotateRight();
+//			sp.fetchSample(angleSample, 0);
+//			
+//		}
 		
 		pilot.travel(50);
 		
 		Sound.beep();
 		LCD.clear();
 		LCD.drawString("END OF PROGRAM", 0, 4);
-		Delay.msDelay(3000);
+		Delay.msDelay(2000);
 		Sound.twoBeeps();
 		
 		LCD.clear();
