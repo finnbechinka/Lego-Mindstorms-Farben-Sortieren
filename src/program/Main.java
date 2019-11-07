@@ -1,43 +1,56 @@
 package program;
 
 import lejos.hardware.Sound;
-import lejos.hardware.ev3.*;
 import lejos.hardware.lcd.LCD;
 import lejos.hardware.motor.*;
 import lejos.hardware.port.*;
 import lejos.hardware.sensor.*;
 import lejos.hardware.Button;
 import lejos.robotics.*;
+import lejos.robotics.chassis.Chassis;
+import lejos.robotics.chassis.Wheel;
+import lejos.robotics.chassis.WheeledChassis;
+import lejos.robotics.navigation.*;
 import lejos.utility.*;
 
 public class Main {
 
 	public static void main(String[] args) {
-		RegulatedMotor motorA = new EV3LargeRegulatedMotor(MotorPort.C);
-		RegulatedMotor motorB = new EV3LargeRegulatedMotor(MotorPort.B);
-		EV3ColorSensor colorSensor = new EV3ColorSensor(SensorPort.S4);
-		
-		colorSensor.setCurrentMode(0);
-		
-		motorA.setSpeed(100);
-		motorB.setSpeed(100);
-		
-		LCD.drawString("test lol", 0, 4);
-		Delay.msDelay(5000);
-		
-		
-		LCD.clear();
-		LCD.drawString("ENTER TO", 0, 3);
-		LCD.drawString("SCAN COLOR", 0, 4);
-		Button.ENTER.waitForPress();
-		int sample = colorSensor.getColorID();
-		
-		LCD.clear();
-		LCD.drawString("COLOR:" + sample, 0, 4);
+		LCD.drawString("gyro and pilot", 0, 4);
+		LCD.drawString("navigation test", 0, 3);
 		Delay.msDelay(3000);
 		
-		motorA.close();
-		motorB.close();
+		
+		RegulatedMotor motorA = new EV3LargeRegulatedMotor(MotorPort.C);
+		RegulatedMotor motorB = new EV3LargeRegulatedMotor(MotorPort.B);
+		// EV3ColorSensor colorSensor = new EV3ColorSensor(SensorPort.S4);
+		@SuppressWarnings("resource")
+		EV3GyroSensor gyroSensor = new EV3GyroSensor(SensorPort.S2);
+
+		//Wheel diameter 5.5
+		//Track width 15
+		Wheel leftWheel = new WheeledChassis.Modeler(motorA, 5.5).offset(-7.5);
+		Wheel rightWheel = new WheeledChassis.Modeler(motorB, 5.5).offset(7.5);
+		Chassis chassis = new WheeledChassis(new Wheel[]{leftWheel, rightWheel}, WheeledChassis.TYPE_DIFFERENTIAL); 
+		MovePilot pilot = new MovePilot(chassis);
+		
+		pilot.setLinearSpeed(5);
+		pilot.setAngularSpeed(50);
+				
+		
+		pilot.travel(50);
+		
+		final SampleProvider sp = gyroSensor.getAngleMode();
+		float[] angleSample = new float[sp.sampleSize()];
+		sp.fetchSample(angleSample, 0);
+		
+		while(angleSample[0] <= 180){
+			pilot.rotateRight();
+			sp.fetchSample(angleSample, 0);
+			
+		}
+		
+		pilot.travel(50);
 		
 		Sound.beep();
 		LCD.clear();
@@ -48,54 +61,6 @@ public class Main {
 		LCD.clear();
 		LCD.drawString("PRESS ENTER TO EXIT", 0, 4);
 		Button.ENTER.waitForPress();
-	}
-	
-	public static void forward(RegulatedMotor a, RegulatedMotor b, int ms){
-		LCD.clear();
-		LCD.drawString("forward, delay:", 0, 4);
-		LCD.drawString(" " + ms, 0, 5);
-		Delay.msDelay(100);
-		a.forward();
-		b.forward();
-		Delay.msDelay(ms);
-		a.stop();
-		b.stop();
-		Delay.msDelay(100);
-	}
-	
-	public static void backward(RegulatedMotor a, RegulatedMotor b, int ms){
-		LCD.clear();
-		LCD.drawString("backward, delay:", 0, 4);
-		LCD.drawString(" " + ms, 0, 5);
-		Delay.msDelay(100);
-		a.backward();
-		b.backward();
-		Delay.msDelay(ms);
-		a.stop();
-		b.stop();
-		Delay.msDelay(100);
-	}
-	
-	public static void turnLeft(RegulatedMotor a, RegulatedMotor b, int ms){
-		LCD.clear();
-		LCD.drawString("left, delay:", 0, 4);
-		LCD.drawString(" " + ms, 0, 5);
-		Delay.msDelay(100);
-		a.forward();
-		Delay.msDelay(ms);
-		a.stop();
-		Delay.msDelay(100);
-	}
-	
-	public static void turnRight(RegulatedMotor a, RegulatedMotor b, int ms){
-		LCD.clear();
-		LCD.drawString("right, delay:", 0, 4);
-		LCD.drawString(" " + ms, 0, 5);
-		Delay.msDelay(100);
-		b.forward();
-		Delay.msDelay(ms);
-		b.stop();
-		Delay.msDelay(100);
 	}
 
 }
