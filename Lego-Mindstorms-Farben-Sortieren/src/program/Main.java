@@ -29,7 +29,8 @@ public class Main {
 	static int[] pos = new int[]{0,0};
 
 	public static void main(String[] args) {
-		new Calibration(pilot);
+		//new Calibration(pilot);
+		new Main();
 		
 		Sound.beep();
 		LCD.clear();
@@ -42,9 +43,19 @@ public class Main {
 	}
 	
 	public Main(){
-		LCD.drawString("pilot", 0, 3);
-		LCD.drawString("navigation test", 0, 4);
-		Delay.msDelay(3000);
+		SampleProvider colorSampleProvider = colorSensor.getRGBMode();
+		float[] colorSample = new float[colorSampleProvider.sampleSize()];
+		
+		LCD.clear();
+		LCD.drawString("Press ENTER", 0, 3);
+		LCD.drawString("to scan color", 0, 4);
+		Button.ENTER.waitForPress();
+		colorSampleProvider.fetchSample(colorSample, 0);
+		
+		LCD.clear();
+		LCD.drawString("color: " + colorSample, 0, 4);
+		Button.ENTER.waitForPress();
+		
 		
 	}
 
