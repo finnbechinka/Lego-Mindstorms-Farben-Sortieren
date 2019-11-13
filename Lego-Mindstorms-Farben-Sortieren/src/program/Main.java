@@ -35,7 +35,7 @@ public class Main {
 		Sound.beep();
 		LCD.clear();
 		LCD.drawString("END OF PROGRAM", 0, 4);
-		Delay.msDelay(1000);
+		Delay.msDelay(1500);
 		
 		LCD.clear();
 		LCD.drawString("PRESS ENTER TO EXIT", 0, 4);
