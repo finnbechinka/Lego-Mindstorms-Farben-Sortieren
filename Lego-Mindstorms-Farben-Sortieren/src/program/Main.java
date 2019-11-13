@@ -53,7 +53,7 @@ public class Main {
 		colorSampleProvider.fetchSample(colorSample, 0);
 		
 		LCD.clear();
-		LCD.drawString("color: " + colorSample, 0, 4);
+		LCD.drawString("RGB: " + colorSample, 0, 4);
 		Button.ENTER.waitForPress();
 		
 		
