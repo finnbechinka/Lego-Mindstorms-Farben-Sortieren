@@ -4,16 +4,15 @@ import lejos.hardware.lcd.LCD;
 import lejos.robotics.navigation.MovePilot;
 import lejos.utility.Delay;
 
-public class Calibration {
+public class Driving {
 	MovePilot pilot;
 	
-	public Calibration(MovePilot pilot){
+	public Driving(MovePilot pilot){
 		this.pilot = pilot;
 		this.pilot.setLinearSpeed(20);
 		this.pilot.setAngularSpeed(100);
 		this.pilot.setAngularAcceleration(10);
 		this.pilot.setLinearAcceleration(4);
-		test();
 	}
 	
 	public void rotate(int deg){

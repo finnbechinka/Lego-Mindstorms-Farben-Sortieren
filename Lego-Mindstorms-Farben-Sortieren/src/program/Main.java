@@ -29,7 +29,7 @@ public class Main {
 	static int[] pos = new int[]{0,0};
 
 	public static void main(String[] args) {
-		//new Calibration(pilot);
+		Driving driving = new Driving(pilot);
 		new Main();
 		
 		Sound.beep();
