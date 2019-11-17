@@ -4,7 +4,7 @@ import lejos.hardware.lcd.LCD;
 import lejos.utility.Delay;
 
 public class Driving {
-	Robot wall_e;
+	private Robot wall_e;
 	
 	public Driving(Robot wall_e){
 		this.wall_e = wall_e;
@@ -19,6 +19,30 @@ public class Driving {
 		LCD.drawString("rotate " + deg + "°", 0, 4);
 		Delay.msDelay(1000);
 		wall_e.getPilot().rotate(deg);
+	}
+	
+	public void turnLeft(int turns) {
+		LCD.clear();
+		LCD.drawString("left turns: " + turns, 0, 4);
+		for(int i = 0; i < turns; i++) {
+			wall_e.resetGyro();
+			while(wall_e.getGyroSample()[0] < 80) {
+				wall_e.getPilot().rotateLeft();
+			}
+			wall_e.getPilot().stop();
+		}
+	}
+	
+	public void turnRight(int turns) {
+		LCD.clear();
+		LCD.drawString("right turns: " + turns, 0, 4);
+		for(int i = 0; i < turns; i++) {
+			wall_e.resetGyro();
+			while(wall_e.getGyroSample()[0] > -80) {
+				wall_e.getPilot().rotateRight();
+			}
+			wall_e.getPilot().stop();
+		}
 	}
 	
 	public void drive(int dist){
