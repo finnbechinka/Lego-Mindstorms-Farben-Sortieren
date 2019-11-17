@@ -1,5 +1,6 @@
 package program;
 
+import lejos.hardware.lcd.LCD;
 import lejos.hardware.motor.EV3LargeRegulatedMotor;
 import lejos.hardware.port.MotorPort;
 import lejos.hardware.port.SensorPort;
@@ -11,6 +12,7 @@ import lejos.robotics.chassis.Chassis;
 import lejos.robotics.chassis.Wheel;
 import lejos.robotics.chassis.WheeledChassis;
 import lejos.robotics.navigation.MovePilot;
+import lejos.utility.Delay;
 
 public class Robot {
 	//Wheel diameter 5.6cm (Calibrated to L5.6 and R5.55)
@@ -46,6 +48,18 @@ public class Robot {
 		this.colorSampleProvider = colorSensor.getRGBMode();
 		this.gyroSampleProvider = gyroSensor.getAngleMode();
 		
+		LCD.clear();
+		LCD.drawString("Calibrating sensor", 0, 3);
+		LCD.drawString("please wait...", 0, 4);
+		this.gyroSensor.setCurrentMode("Angle");
+		Delay.msDelay(500);
+		while(this.getGyroSample()[0] != 0) {
+			Delay.msDelay(10);
+		}
+		LCD.clear();
+		LCD.drawString("Calibration done", 0, 4);
+		Delay.msDelay(1500);
+			
 		this.pos = new int[]{0,0};
 	}
 	
