@@ -18,7 +18,7 @@ import lejos.utility.Delay;
 
 public class Robot {
 	// Wheel diameter 5.6cm (Calibrated to L5.6 and R5.55)
-	// Track width 12cm (Calibrated to 11cm)
+	// Track width 12.15cm
 	private Wheel leftWheel;
 	private Wheel rightWheel;
 	private Chassis chassis;
@@ -40,8 +40,8 @@ public class Robot {
 		this.motorA = new EV3LargeRegulatedMotor(MotorPort.B);
 		this.motorB = new EV3LargeRegulatedMotor(MotorPort.C);
 
-		this.leftWheel = new WheeledChassis.Modeler(motorA, 5.6).offset(-5.5);
-		this.rightWheel = new WheeledChassis.Modeler(motorB, 5.55).offset(5.5);
+		this.leftWheel = new WheeledChassis.Modeler(motorA, 5.6).offset(-6.075);
+		this.rightWheel = new WheeledChassis.Modeler(motorB, 5.55).offset(6.075);
 		this.chassis = new WheeledChassis(
 				new Wheel[] { leftWheel, rightWheel },
 				WheeledChassis.TYPE_DIFFERENTIAL);
@@ -68,7 +68,7 @@ public class Robot {
 		LCD.clear();
 		LCD.drawString("Calibration done", 0, 4);
 		Delay.msDelay(1000);
-		Sound.buzz();
+		Sound.beep();
 
 		this.pos = new int[] { 0, 0 };
 	}

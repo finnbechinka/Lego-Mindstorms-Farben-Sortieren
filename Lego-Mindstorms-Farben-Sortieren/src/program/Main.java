@@ -8,6 +8,9 @@ import lejos.utility.*;
 public class Main {
 
 	public static void main(String[] args) {
+		LCD.clear();
+		LCD.drawString("starting up...", 0, 4);
+		
 		Robot wall_e = new Robot();
 		Driving driving = new Driving(wall_e);
 		// wall_e.testGyro();
