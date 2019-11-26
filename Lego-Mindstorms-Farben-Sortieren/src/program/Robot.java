@@ -1,5 +1,6 @@
 package program;
 
+import lejos.hardware.Button;
 import lejos.hardware.Sound;
 import lejos.hardware.lcd.LCD;
 import lejos.hardware.motor.EV3LargeRegulatedMotor;
@@ -16,13 +17,13 @@ import lejos.robotics.navigation.MovePilot;
 import lejos.utility.Delay;
 
 public class Robot {
-	//Wheel diameter 5.6cm (Calibrated to L5.6 and R5.55)
-	//Track width 12cm (Calibrated to 11cm);
+	// Wheel diameter 5.6cm (Calibrated to L5.6 and R5.55)
+	// Track width 12cm (Calibrated to 11cm)
 	private Wheel leftWheel;
 	private Wheel rightWheel;
-	private Chassis chassis; 
+	private Chassis chassis;
 	private MovePilot pilot;
-	
+
 	private RegulatedMotor motorA;
 	private RegulatedMotor motorB;
 	private EV3ColorSensor colorSensor;
@@ -32,63 +33,78 @@ public class Robot {
 	private float[] colorSample;
 	private SampleProvider gyroSampleProvider;
 	private float[] gyroSample;
-	
+
 	private int[] pos;
-	
+
 	public Robot() {
-		this.leftWheel = new WheeledChassis.Modeler(motorA, 5.6).offset(-5.5);
-		this.rightWheel = new WheeledChassis.Modeler(motorB, 5.55).offset(5.5);
-		this.chassis = new WheeledChassis(new Wheel[]{leftWheel, rightWheel}, WheeledChassis.TYPE_DIFFERENTIAL);
-		this.pilot = new MovePilot(chassis);
-		
 		this.motorA = new EV3LargeRegulatedMotor(MotorPort.B);
 		this.motorB = new EV3LargeRegulatedMotor(MotorPort.C);
+
+		this.leftWheel = new WheeledChassis.Modeler(motorA, 5.6).offset(-5.5);
+		this.rightWheel = new WheeledChassis.Modeler(motorB, 5.55).offset(5.5);
+		this.chassis = new WheeledChassis(
+				new Wheel[] { leftWheel, rightWheel },
+				WheeledChassis.TYPE_DIFFERENTIAL);
+		this.pilot = new MovePilot(chassis);
+
 		this.colorSensor = new EV3ColorSensor(SensorPort.S4);
 		this.gyroSensor = new EV3GyroSensor(SensorPort.S2);
-		
+
 		this.colorSampleProvider = colorSensor.getRGBMode();
 		this.gyroSampleProvider = gyroSensor.getAngleMode();
-		
+
+		this.gyroSample = new float[gyroSampleProvider.sampleSize()];
+		this.colorSample = new float[colorSampleProvider.sampleSize()];
+
 		LCD.clear();
 		LCD.drawString("Calibrating gyro", 0, 3);
 		LCD.drawString("please wait...", 0, 4);
 		this.gyroSensor.setCurrentMode("Rate");
-		Delay.msDelay(500);
-		while(this.getGyroSample()[0] != 0) {
-			Delay.msDelay(10);
-		}
 		this.gyroSensor.setCurrentMode("Angle");
 		Delay.msDelay(500);
-		while(this.getGyroSample()[0] != 0) {
+		while (this.getGyroSample()[0] != 0) {
 			Delay.msDelay(10);
 		}
 		LCD.clear();
 		LCD.drawString("Calibration done", 0, 4);
 		Delay.msDelay(1000);
 		Sound.buzz();
-			
-		this.pos = new int[]{0,0};
+
+		this.pos = new int[] { 0, 0 };
 	}
-	
-	public MovePilot getPilot(){
+
+	public MovePilot getPilot() {
 		return this.pilot;
 	}
-	
+
 	public int[] getPos() {
 		return this.pos;
 	}
-	
+
 	public float[] getColorSample() {
 		colorSampleProvider.fetchSample(colorSample, 0);
 		return this.colorSample;
 	}
-	
+
 	public float[] getGyroSample() {
-		gyroSampleProvider.fetchSample(colorSample, 0);
+		gyroSampleProvider.fetchSample(gyroSample, 0);
 		return this.gyroSample;
 	}
-	
+
 	public void resetGyro() {
 		this.gyroSensor.reset();
+	}
+
+	public void testGyro() {
+		Delay.msDelay(1000);
+		while (Button.ENTER.isUp()) {
+			float deg = 0;
+			if (deg != this.getGyroSample()[0]) {
+				deg = this.getGyroSample()[0];
+				LCD.clear();
+				LCD.drawString("gs: " + deg, 0, 4);
+			}
+			Delay.msDelay(50);
+		}
 	}
 }
