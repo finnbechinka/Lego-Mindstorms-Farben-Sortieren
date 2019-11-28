@@ -1,5 +1,6 @@
 package program;
 
+import program.Robot.direction;
 import lejos.hardware.lcd.LCD;
 import lejos.utility.Delay;
 
@@ -22,13 +23,23 @@ public class Driving {
 		wall_e.getPilot().rotate(-360, true);
 		boolean targetHit = false;
 		while (!targetHit) {
-			if (wall_e.getGyroSample()[0] >= 180-32.32) {
+			if (wall_e.getGyroSample()[0] >= deg - 32.32) {
 				wall_e.getPilot().stop();
 				LCD.clear();
 				LCD.drawString("end deg: " + wall_e.getGyroSample()[0], 0, 5);
 				Delay.msDelay(666);
 				targetHit = true;
 			}
+		}
+		
+		if(wall_e.getDir() == direction.FRONT){
+			wall_e.setDir(direction.LEFT);
+		}else if(wall_e.getDir() == direction.LEFT){
+			wall_e.setDir(direction.BACK);
+		}else if(wall_e.getDir() == direction.RIGHT){
+			wall_e.setDir(direction.FRONT);
+		}else if(wall_e.getDir() == direction.BACK){
+			wall_e.setDir(direction.RIGHT);
 		}
 	}
 
@@ -45,6 +56,16 @@ public class Driving {
 				targetHit = true;
 			}
 		}
+		
+		if(wall_e.getDir() == direction.FRONT){
+			wall_e.setDir(direction.RIGHT);
+		}else if(wall_e.getDir() == direction.LEFT){
+			wall_e.setDir(direction.FRONT);
+		}else if(wall_e.getDir() == direction.RIGHT){
+			wall_e.setDir(direction.BACK);
+		}else if(wall_e.getDir() == direction.BACK){
+			wall_e.setDir(direction.LEFT);
+		}
 	}
 
 	public void drive(int dist) {
@@ -52,6 +73,16 @@ public class Driving {
 		LCD.drawString("drive " + dist + "cm", 0, 4);
 		Delay.msDelay(1000);
 		wall_e.getPilot().travel(dist, true);
+		
+		if(wall_e.getDir() == direction.FRONT){
+			wall_e.getPos()[0] = wall_e.getPos()[0] + dist;			
+		}else if(wall_e.getDir() == direction.BACK){
+			wall_e.getPos()[0] = wall_e.getPos()[0] - dist;	
+		}else if(wall_e.getDir() == direction.LEFT){
+			wall_e.getPos()[0] = wall_e.getPos()[1] - dist;	
+		}else if(wall_e.getDir() == direction.RIGHT){
+			wall_e.getPos()[0] = wall_e.getPos()[1] + dist;
+		}
 
 //		// ref.: https://www.youtube.com/watch?v=U-LdBQ-vBkg
 //		double target = 0;

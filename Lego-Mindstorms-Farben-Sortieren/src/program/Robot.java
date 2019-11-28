@@ -35,6 +35,8 @@ public class Robot {
 	private float[] gyroSample;
 
 	private int[] pos;
+	public enum direction { FRONT, RIGHT, LEFT, BACK }
+	private direction dir; 
 
 	public Robot() {
 		this.motorA = new EV3LargeRegulatedMotor(MotorPort.B);
@@ -71,6 +73,7 @@ public class Robot {
 		Sound.beep();
 
 		this.pos = new int[] { 0, 0 };
+		this.dir = direction.FRONT;
 	}
 
 	public MovePilot getPilot() {
@@ -79,6 +82,14 @@ public class Robot {
 
 	public int[] getPos() {
 		return this.pos;
+	}
+	
+	public direction getDir() {
+		return this.dir;
+	}
+	
+	public void setDir(direction newDir){
+		this.dir = newDir;
 	}
 
 	public float[] getColorSample() {
