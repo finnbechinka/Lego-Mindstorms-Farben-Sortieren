@@ -17,7 +17,7 @@ import lejos.robotics.navigation.MovePilot;
 import lejos.utility.Delay;
 
 public class Robot {
-	// Wheel diameter 5.6cm (Calibrated to L5.6 and R5.55)
+	// Wheel diameter 5.6cm
 	// Track width 12.15cm
 	private Wheel leftWheel;
 	private Wheel rightWheel;
@@ -35,15 +35,19 @@ public class Robot {
 	private float[] gyroSample;
 
 	private int[] pos;
-	public enum direction { FRONT, RIGHT, LEFT, BACK }
-	private direction dir; 
+
+	public enum direction {
+		FRONT, RIGHT, LEFT, BACK
+	};
+
+	private direction dir;
 
 	public Robot() {
-		this.motorA = new EV3LargeRegulatedMotor(MotorPort.B);
-		this.motorB = new EV3LargeRegulatedMotor(MotorPort.C);
+		this.motorA = new EV3LargeRegulatedMotor(MotorPort.C);
+		this.motorB = new EV3LargeRegulatedMotor(MotorPort.B);
 
-		this.leftWheel = new WheeledChassis.Modeler(motorA, 5.6).offset(-6.075);
-		this.rightWheel = new WheeledChassis.Modeler(motorB, 5.55).offset(6.075);
+		this.leftWheel = WheeledChassis.modelWheel(motorA, 56).offset(-53.28);
+		this.rightWheel = WheeledChassis.modelWheel(motorB, 56).offset(53.28);
 		this.chassis = new WheeledChassis(
 				new Wheel[] { leftWheel, rightWheel },
 				WheeledChassis.TYPE_DIFFERENTIAL);
@@ -83,12 +87,12 @@ public class Robot {
 	public int[] getPos() {
 		return this.pos;
 	}
-	
+
 	public direction getDir() {
 		return this.dir;
 	}
-	
-	public void setDir(direction newDir){
+
+	public void setDir(direction newDir) {
 		this.dir = newDir;
 	}
 
